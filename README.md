@@ -27,16 +27,26 @@ features in question.
 
 ## Setting up
 
-You'll need a mongodb with a single collection, StashItems. Here's a tidbit of simple sample data:
+Get your `.env` configured with at least the `MONGODB_URL`, then:
+
+``` zsh
+yarn
+yarn prisma generate
+yarn prisma db push
+```
+
+After you login and have a user ID in the `users` collection, create a couple of documents in `stashitems` such as:
 
 ``` json
 [{
     "name" : "Old sock",
-    "location" : "On ivory pedestal"
+    "location" : "On ivory pedestal",
+    "userId": "your-user-id"
 },
 {
     "name" : "ESP32 thingy",
-    "location" : "Under doormat"
+    "location" : "Under doormat",
+    "userId": "your-user-id"
 }]
 ```
 
@@ -47,12 +57,13 @@ in this project yet set in stone, so course corrections are gratefully accepted.
 
 ## Current plans
 
-Authentication is working with GitHub (and untested with Discord); however, it's presently unclear how to consume this
-within the server API; not only for authentication, but for purposes of querying the user's documents only. Once
-authentication is introduced, then fleshing out the rest of the CRUD will be imminent.
+Authentication is working with GitHub and Discord through Lucia. However, I'm still in search of the way to unify the same oauth user coming from different parties.
 
-Also of concern is the `fetch` pattern for URLs relative to the present host. At the moment this is hardcoded to the
-standard localhost and port.
+The hope was to unify client and server calls to the API from the non-api routes; however, forwarding the session within the server is unclear at the moment. Therefore, the abstracted CRUD methods which the routes call are called directly by the server. Clients, including external ones with authentication, should be able to fetch from the api route directly for indentical results.
 
-Many current examples exist of Svelte forms, so implementing those is a lower priority at the moment (though create at
-least would help populate data until a seed migration is ready).
+## Attributions
+
+Cheers to:
+
+- [Pilcrow](https://pilcrow.vercel.app/) for Lucia and the examples for Sveltekit/github login.
+- [Gustavo](https://www.gustavocadev.me/) for a working example of how to get MongoDb integrated with Lucia

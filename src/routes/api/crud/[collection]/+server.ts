@@ -1,14 +1,19 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
-import db, { AllowedCollections } from '$db/mongo';
+import { crudCollections } from '$lib/server/prisma';
+import { getList } from '$lib/crud/getList';
 
 // List
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
 	const { collection = '' } = params;
-	if (AllowedCollections.indexOf(collection) === -1) {
+	const session = await locals.validate();
+	if (!session) {
+		throw error(401);
+	}
+	if (!crudCollections[collection]) {
 		throw error(404, {
-			message: 'Not found'
+			message: 'Not found',
 		});
 	}
-	const data = await db.collection(collection).find({}).toArray();
-	return json(data);
+	const list = await getList(collection, {});
+	return json(list);
 };

@@ -1,14 +1,18 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
-import db, { AllowedCollections } from '$db/mongo';
-import { ObjectId } from 'mongodb';
+import { getOne } from '$lib/crud/getOne';
+import { crudCollections } from '$lib/server/prisma';
 
-export const GET: RequestHandler = async ({ params }) => {
-	const { collection = '', stashitemId } = params;
-	if (AllowedCollections.indexOf(collection) === -1) {
+export const GET: RequestHandler = async ({ params, locals }) => {
+	const { collection = '', id = '' } = params;
+	const session = await locals.validate();
+	if (!session) {
+		throw error(401);
+	}
+	if (!crudCollections[collection]) {
 		throw error(404, {
-			message: 'Not found'
+			message: 'Not found',
 		});
 	}
-	const data = await db.collection(collection).findOne({ _id: new ObjectId(stashitemId) });
+	const data = await getOne(collection, id);
 	return json(data);
 };
