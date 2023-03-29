@@ -4,6 +4,6 @@
 </script>
 
 <div>
-	<strong>{stashitem.name}</strong>
-	<span>({stashitem.location})</span>
+	<strong>{stashitem?.name}</strong>
+	<span>({stashitem?.location})</span>
 </div>

@@ -5,7 +5,7 @@ construct and deploy web applications involving user authentication and per-user
 
 ## The state of Sveltekit
 
-At present (25/02/23), most Sveltekit examples which demonstrate how to build the important parts of a fullstack
+At present (29/03/23), most Sveltekit examples which demonstrate how to build the important parts of a fullstack
 app apply to pre-1.0 versions. This includes database integration, API structuring for CRUD operations and other
 vital features for learning how to assemble an application with Sveltekit 1.0. While ultimately something like
 what this repo aims to offer will hopefully be an option on initialising a Sveletekit project, it is my hope to
@@ -17,7 +17,7 @@ features in question.
 ## Basic Goals
 
 - Provide an authenticated Sveltekit API for consumption both by the Sveltekit app and potentially external integrations
-- Offer CRUD and search operations to Mongodb through the API
+- Offer CRUD and search operations to Mongodb through the API (including user-owned data and soft deletes)
 - Provide an authenticated Sveltekit client and server consumer of the API
 
 ### Nice to haves
@@ -41,12 +41,18 @@ After you login and have a user ID in the `users` collection, create a couple of
 [{
     "name" : "Old sock",
     "location" : "On ivory pedestal",
-    "userId": "your-user-id"
+    "userId": "your-user-id",
+    "meta": {
+        "status": "ACTIVE"
+    }
 },
 {
     "name" : "ESP32 thingy",
     "location" : "Under doormat",
-    "userId": "your-user-id"
+    "userId": "your-user-id",
+    "meta": {
+        "status": "ACTIVE"
+    }
 }]
 ```
 
@@ -59,7 +65,7 @@ in this project yet set in stone, so course corrections are gratefully accepted.
 
 Authentication is working with GitHub and Discord through Lucia. However, I'm still in search of the way to unify the same oauth user coming from different parties.
 
-The hope was to unify client and server calls to the API from the non-api routes; however, forwarding the session within the server is unclear at the moment. Therefore, the abstracted CRUD methods which the routes call are called directly by the server. Clients, including external ones with authentication, should be able to fetch from the api route directly for indentical results.
+Additionally, as the current CRUD body of work was being finalised, Lucia went into its final breaking change before 1.0. This has not yet been tested against that, so the next update will incorporate those changes.
 
 ## Attributions
 

@@ -43,11 +43,27 @@ model Key {
 	@@map("key")
 }
 
+enum MetaStatus {
+	ACTIVE
+	DELETED
+}
+
+type MetaData {
+	status MetaStatus?
+	createdAt DateTime?
+	updatedAt DateTime?
+	createdBy String?
+	updatedBy String?
+	deletedBy String?
+	deletedAt DateTime?
+}
+
 model StashItems {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   userId String
   location String
+  meta MetaData
 
   @@map("stashitems")
 }

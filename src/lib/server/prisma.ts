@@ -1,22 +1,42 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { env } from '$env/dynamic/private';
 
-const prisma = global.__prisma || new PrismaClient();
+const prisma = new PrismaClient();
 
 if (env.NODE_ENV === 'development') {
 	global.__prisma = prisma;
 }
 
-interface CrudCollections {
-	[key: string]: {
-		ownedByUser?: boolean;
-	};
+// TODO: Work out if there's a way to make this a generic type. At the moment, it's the only way I know to
+// correctly get the collection type from the PrismaClient instance.
+type PrismaCollectionType = Prisma.StashItemsDelegate<
+	Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+>;
+
+interface CrudCollection {
+	getCollection: () => PrismaCollectionType;
+	ownedByUser?: boolean;
 }
 
-const crudCollections: CrudCollections = {
-	stashItems: {
+type CrudModels = Partial<Record<Prisma.ModelName, CrudCollection>>;
+
+const crudModels: CrudModels = {
+	[Prisma.ModelName.StashItems]: {
+		getCollection: () => prisma.stashItems,
 		ownedByUser: true,
 	},
 };
 
-export { crudCollections, prisma };
+interface CrudModelsByCollectionPath {
+	[key: string]: Prisma.ModelName;
+}
+
+const crudModelsByCollectionPath = (
+	Object.keys(crudModels) as Array<Prisma.ModelName>
+).reduce<CrudModelsByCollectionPath>((acc, modelName) => {
+	const collectionPath = modelName.toLowerCase();
+	acc[collectionPath] = modelName;
+	return acc;
+}, {});
+
+export { crudModelsByCollectionPath, crudModels, prisma };

@@ -1,14 +1,18 @@
-import { prisma, crudCollections } from '$lib/server/prisma';
+import { MetaStatus, Prisma } from '@prisma/client';
+import { crudModels } from '$lib/server/prisma';
 
-export const getList = async (collection: string, filter: any = {}, session: any = null) => {
-	console.log('gl', filter);
-	const collectionConfig = crudCollections[collection];
+// Copilot: Can you please generate a unit test for this function?
+export const getList = async (modelName: Prisma.ModelName, filter: any = {}, userId = '') => {
+	const collectionConfig = crudModels[modelName];
 	if (!collectionConfig) {
 		return null;
 	}
 	if (collectionConfig.ownedByUser) {
-		filter.userId = session?.userId;
+		filter.userId = userId;
 	}
-	// @ts-expect-error  TODO: make TS happy about this
-	return prisma[collection].findMany({ where: filter });
+	filter.meta = {
+		status: MetaStatus.ACTIVE,
+	};
+	const prismaCollection = collectionConfig.getCollection();
+	return prismaCollection.findMany({ where: filter });
 };

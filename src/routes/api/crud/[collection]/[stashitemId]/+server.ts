@@ -1,6 +1,6 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { getOne } from '$lib/crud/getOne';
-import { crudCollections } from '$lib/server/prisma';
+import { crudModelsByCollectionPath } from '$lib/server/prisma';
 
 export const GET: RequestHandler = async ({ params, locals }) => {
 	const { collection = '', id = '' } = params;
@@ -8,11 +8,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 	if (!session) {
 		throw error(401);
 	}
-	if (!crudCollections[collection]) {
+	if (!crudModelsByCollectionPath[collection]) {
 		throw error(404, {
 			message: 'Not found',
 		});
 	}
-	const data = await getOne(collection, id);
+	const data = await getOne(crudModelsByCollectionPath[collection], id);
 	return json(data);
 };

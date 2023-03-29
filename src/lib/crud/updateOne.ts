@@ -1,7 +1,13 @@
 import { MetaStatus, Prisma } from '@prisma/client';
 import { crudModels } from '$lib/server/prisma';
+import { updateMetaData } from '$lib/db/helpers/updateMetaData';
 
-export const getOne = async (modelName: Prisma.ModelName, id: string, userId = '') => {
+export const updateOne = async (
+	modelName: Prisma.ModelName,
+	id: string,
+	data: any,
+	userId = ''
+) => {
 	const collectionConfig = crudModels[modelName];
 	if (!collectionConfig) {
 		return null;
@@ -16,5 +22,14 @@ export const getOne = async (modelName: Prisma.ModelName, id: string, userId = '
 		filter.userId = userId;
 	}
 	const prismaCollection = collectionConfig.getCollection();
-	return prismaCollection.findFirst({ where: filter });
+	return prismaCollection.update({
+		where: filter,
+		data: {
+			...data,
+			meta: {
+				...data?.meta,
+				...updateMetaData(userId),
+			},
+		},
+	});
 };
