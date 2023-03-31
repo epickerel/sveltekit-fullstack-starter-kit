@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ cookies, url, locals }) => {
 				name: '',
 			}));
 		const session = await auth.createSession(user.userId);
-		locals.setSession(session);
+		locals.auth.setSession(session);
 	} catch (e) {
 		return new Response(null, {
 			status: 500,

@@ -1,4 +1,5 @@
 import lucia from 'lucia-auth';
+import { sveltekit } from 'lucia-auth/middleware';
 import { github, discord } from '@lucia-auth/oauth/providers';
 import prismaAdapter from '@lucia-auth/adapter-prisma';
 import { dev } from '$app/environment';
@@ -13,6 +14,7 @@ import {
 export const auth = lucia({
 	adapter: prismaAdapter(prisma),
 	env: dev ? 'DEV' : 'PROD',
+	middleware: sveltekit(),
 	transformUserData: (userData) => {
 		return {
 			userId: userData.id,

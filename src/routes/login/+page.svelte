@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-
-	export let form: { message?: string };
 </script>
 
 <h2>Sign in</h2>

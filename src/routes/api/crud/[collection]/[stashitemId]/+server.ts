@@ -4,7 +4,7 @@ import { crudModelsByCollectionPath } from '$lib/server/prisma';
 
 export const GET: RequestHandler = async ({ params, locals }) => {
 	const { collection = '', id = '' } = params;
-	const session = await locals.validate();
+	const session = await locals.auth.validate();
 	if (!session) {
 		throw error(401);
 	}

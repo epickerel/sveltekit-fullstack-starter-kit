@@ -10,37 +10,37 @@ datasource db {
   url = env("MONGODB_URI")
 }
 
-model User {
+model AuthUser {
 	id String @id @map("_id")
 	name String
 	username String @unique
-	session Session[]
-	Key Key[]
+	auth_session AuthSession[]
+	auth_key AuthKey[]
 
-	@@map("users")
+	@@map("auth_user")
 }
 
-model Session {
+model AuthSession {
 	id String @id @map("_id")
 	user_id String
 	active_expires BigInt
 	idle_expires BigInt
-	user User @relation(references: [id], fields: [user_id], onDelete: Cascade)
+	auth_user AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
 	@@index([user_id])
-	@@map("session")
+	@@map("auth_session")
 }
 
-model Key {
+model AuthKey {
 	id String @id @map("_id")
 	hashed_password String?
 	user_id String
-	primary Boolean
-	user User @relation(references: [id], fields: [user_id], onDelete: Cascade)
+	primary_key Boolean
+	auth_user AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
 	expires BigInt?
 
 	@@index([user_id])
-	@@map("key")
+	@@map("auth_key")
 }
 
 enum MetaStatus {

@@ -27,7 +27,7 @@ features in question.
 
 ## Setting up
 
-Get your `.env` configured with at least the `MONGODB_URL`, then:
+Get your `.env` configured with at least the `MONGODB_URL` and creditials for one oauth provider, then:
 
 ``` zsh
 yarn
@@ -63,9 +63,12 @@ in this project yet set in stone, so course corrections are gratefully accepted.
 
 ## Current plans
 
-Authentication is working with GitHub and Discord through Lucia. However, I'm still in search of the way to unify the same oauth user coming from different parties.
+Authentication is working with GitHub and Discord through Lucia. However, I'm still in search of the way to unify the same
+oauth user coming from different parties. Lucia is now in a state which should be non-breaking through 1.0.
 
-Additionally, as the current CRUD body of work was being finalised, Lucia went into its final breaking change before 1.0. This has not yet been tested against that, so the next update will incorporate those changes.
+The abstracted CRUD work done raises the question as to whether Prisma was the correct choice, as its tooling is designed
+to make abstracted operations on collections inherently difficult. Most notably, see the complicated workarounds in
+src/lib/server/prisma.ts to get a handle on the Prisma collection for a given ModelName.
 
 ## Attributions
 
