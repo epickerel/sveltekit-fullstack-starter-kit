@@ -1,3 +1,6 @@
+## NOTE 2023-12-15
+With the release today of sveltekit 2.0 today, this should not be used as an example moving forward.
+
 # sveltekit-starter-kit
 
 This is a work in progress, the goal of which is to create a sveltekit fullstack starter pack ready to quickly
